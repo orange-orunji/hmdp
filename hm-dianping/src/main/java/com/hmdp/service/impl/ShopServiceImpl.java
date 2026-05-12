@@ -3,18 +3,15 @@ package com.hmdp.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.BooleanUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import com.hmdp.dto.Result;
 import com.hmdp.entity.Shop;
 import com.hmdp.mapper.ShopMapper;
 import com.hmdp.service.IShopService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hmdp.utils.CacheClient;
 import com.hmdp.utils.RedisConstants;
 import com.hmdp.utils.RedisData;
-import io.lettuce.core.RedisException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,8 +38,9 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
-    @Autowired
-    private RedisTemplate<Object, Object> redisTemplate;
+    @Resource
+    private CacheClient cacheClient;
+
 
     /**
      * 根据id查询店铺信息
@@ -56,7 +54,7 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
         //互斥锁解决缓存击穿(缓存穿透解决(保存空缓存)模板上加上了缓存击穿)
 //        Shop shop = queryWithMutex(id);
         //逻辑锁解决缓存击穿问题
-        Shop shop = queryWithExpireTime(id);
+        Shop shop = cacheClient.queryWithExpireTime(CACHE_SHOP_KEY,id,Shop.class,30L,TimeUnit.MINUTES,this::getById);
         if(shop == null){
             return Result.fail("店铺不存在");
         }
