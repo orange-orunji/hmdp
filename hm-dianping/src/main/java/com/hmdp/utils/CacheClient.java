@@ -116,7 +116,18 @@ public class CacheClient {
         //7.默认返回
         return result;
     }
-
+    /**
+     * 互斥锁解决缓存击穿问题
+     * @param prefix
+     * @param id
+     * @param type
+     * @param expireTime
+     * @param unit
+     * @param dbFallback
+     * @param
+     * @param <ID>
+     * @return
+     */
     public <R,ID> R queryWithMiddleLock(String prefix,ID id,Class<R> type,
                                     Long expireTime,TimeUnit unit,Function<ID, R> dbFallback) {
         //1.查询redis是否存在店铺信息
