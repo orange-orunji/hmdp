@@ -54,7 +54,13 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
             return Result.fail("库存不足！");
         }
         Long userId = UserHolder.getUser().getId();
-        synchronized (userId.toString().intern()){
+        //获取锁对象
+        IRedisLock lock = new IRedisLock(USER_ID+userId, stringRedisTemplate);
+
+        if (!lock.tryLock(10)){
+            return Result.fail("请勿重复下单！");
+        }
+        try {
             //获取事务代理对象
             IVoucherOrderService proxy = (IVoucherOrderService) AopContext.currentProxy();
             return proxy.getVoucherOrder(voucherId);
