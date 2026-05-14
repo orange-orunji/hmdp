@@ -10,13 +10,16 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hmdp.service.IVoucherService;
 import com.hmdp.utils.RedisIdWorker;
 import com.hmdp.utils.UserHolder;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.aop.framework.AopContext;
-import org.springframework.lang.NonNull;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -35,14 +38,20 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
     private IVoucherService voucherService;
     @Resource
     private RedisIdWorker redisIdWorker;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
+    @Resource
+    private RedissonClient redissonClient;
 
+
+    private static final String USER_ID = "lock:shop:";
     /**
      * 秒杀优惠券
      * @param voucherId
      * @return
      */
     @Override
-    public Object seckillVoucher(Long voucherId) {
+    public Object seckillVoucher(Long voucherId) throws InterruptedException {
         //1.根据id查询优惠券信息
         SeckillVoucher voucher = seckill.getById(voucherId);
         //2.判断秒杀是否开始
@@ -54,16 +63,21 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
             return Result.fail("库存不足！");
         }
         Long userId = UserHolder.getUser().getId();
+        String name = USER_ID + userId;
         //获取锁对象
-        IRedisLock lock = new IRedisLock(USER_ID+userId, stringRedisTemplate);
-
-        if (!lock.tryLock(10)){
+//        IRedisLock lock = new IRedisLock(USER_ID+userId, stringRedisTemplate);
+        RLock lock = redissonClient.getLock(name);
+        if (!lock.tryLock(1, 10, TimeUnit.SECONDS)){
             return Result.fail("请勿重复下单！");
         }
         try {
             //获取事务代理对象
             IVoucherOrderService proxy = (IVoucherOrderService) AopContext.currentProxy();
             return proxy.getVoucherOrder(voucherId);
+        } catch (IllegalStateException e) {
+            return Result.fail("请勿重复下单！");
+        } finally {
+            lock.unlock();
         }
     }
 
