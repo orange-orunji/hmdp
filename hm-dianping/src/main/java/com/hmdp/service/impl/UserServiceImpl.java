@@ -37,8 +37,6 @@ import java.util.concurrent.TimeUnit;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
 
     @Resource
-    private RedisTemplate<String,Object> redisTemplate;
-    @Resource
     private StringRedisTemplate stringRedisTemplate;
     /**
      * 发送验证码
@@ -99,7 +97,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class);
         //5.保存Hash对象到redis
 //        session.setAttribute("user", BeanUtil.copyProperties(user, UserDTO.class));
-        redisTemplate.opsForHash().putAll(RedisConstants.LOGIN_USER_KEY+token,
+        stringRedisTemplate.opsForHash().putAll(RedisConstants.LOGIN_USER_KEY+token,
                 BeanUtil.beanToMap(userDTO,new HashMap<>(), CopyOptions.create()
                         .ignoreNullValue().setFieldValueEditor((fleid, value)->value.toString())));
         stringRedisTemplate.expire(RedisConstants.LOGIN_USER_KEY+token,

@@ -31,6 +31,10 @@ public class VoucherOrderController {
      */
     @PostMapping("seckill/{id}")
     public Result seckillVoucher(@PathVariable("id") Long voucherId) throws InterruptedException {
-        return Result.ok(voucherOrderService.seckillVoucher(voucherId));
+        Object result = voucherOrderService.seckillVoucher(voucherId);
+        if (result instanceof Result) {
+            return (Result) result;
+        }
+        return Result.ok(result);
     }
 }
