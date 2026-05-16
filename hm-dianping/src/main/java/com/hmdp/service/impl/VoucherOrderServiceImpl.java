@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import java.time.Duration;
 import java.util.Collections;
@@ -54,6 +55,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
     private static final String GROUP_NAME = "g1";
     private static final String CONSUMER_NAME = "c1";    //创建lua脚ben
     private static final DefaultRedisScript<Long> SECKILL;
+    private volatile boolean running = true;
     // 消费者组是否已经初始化的标记
     private volatile boolean groupInitialized = false;
     static {
@@ -67,19 +69,46 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
     //创建线程池
     private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
+    @PreDestroy
+    public void destroy() {
+        running = false;
+        executor.shutdown();
+        try {
+            if (!executor.awaitTermination(10, TimeUnit.SECONDS)) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+    }
     //初始化代理对象和提交线程任务
     @PostConstruct
     public void init(){
-       executor.submit(runnable);
+        if (!groupInitialized) extracted();
+        executor.submit(runnable);
     }
-
+    /**
+     * 创建消费者组
+     * @return
+     */
+    private void extracted() {
+        try {
+            // 创建消费者组，从队列开头(0)开始消费
+            stringRedisTemplate.opsForStream()
+                    .createGroup(STREAM_KEY, ReadOffset.from("0"), GROUP_NAME);
+            log.info("消费者组 {} 创建成功", GROUP_NAME);
+        } catch (Exception e) {
+            // 组已经存在，忽略异常
+            log.info("消费者组 {} 已存在，无需重复创建", GROUP_NAME);
+        }
+    }
     Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            if (!groupInitialized) extracted();
             groupInitialized = true;
 
-            while (true){
+            while (running){
                 try {
 //                    VoucherOrder voucherOrder = queue.take();
 //                    proxy.getVoucherOrder(voucherOrder);
@@ -87,37 +116,23 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
                     List<MapRecord<String, Object, Object>> recordList = stringRedisTemplate.opsForStream().read(
                             Consumer.from(GROUP_NAME,CONSUMER_NAME),
                             StreamReadOptions.empty().count(1).block(Duration.ofSeconds(2)),
-                            StreamOffset.create(STREAM_KEY, ReadOffset.lastConsumed())
+                            StreamOffset.create(STREAM_KEY, ReadOffset.from(">"))
                     );
                     //2.获取阻塞队列中的订单消息
-                    if(recordList == null) continue;
+                    if(recordList == null || recordList.isEmpty()) continue;
                     MapRecord<String, Object, Object> record = recordList.get(0);
                     //3.获取订单信息
-                    VoucherOrder voucherOrder = BeanUtil.toBean(record, VoucherOrder.class);
+                    VoucherOrder voucherOrder = BeanUtil.mapToBean(record.getValue(), VoucherOrder.class,true);
                     proxy.getVoucherOrder(voucherOrder);
                     //4.XCAK 处理处理队列中的订单信息
-                    stringRedisTemplate.opsForStream().acknowledge(STREAM_KEY,CONSUMER_NAME,record.getId());
+                    stringRedisTemplate.opsForStream().acknowledge(STREAM_KEY,GROUP_NAME,record.getId());
                 } catch (Exception e) {
                     handlerPlanting();
                 }
             }
         }
 
-        /**
-         * 创建消费者组
-         * @return
-         */
-        private void extracted() {
-            try {
-                // 创建消费者组，从队列开头(0)开始消费
-                stringRedisTemplate.opsForStream()
-                        .createGroup(STREAM_KEY, ReadOffset.from("0"), GROUP_NAME);
-                log.info("消费者组 {} 创建成功", GROUP_NAME);
-            } catch (Exception e) {
-                // 组已经存在，忽略异常
-                log.info("消费者组 {} 已存在，无需重复创建", GROUP_NAME);
-            }
-        }
+
 
         /**
          * 处理异常带出来订单队列数据
@@ -125,23 +140,24 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
          */
 
         private void handlerPlanting() {
-            while (true){
+            while (running){
                 try {
                     List<MapRecord<String, Object, Object>> recordList = stringRedisTemplate.opsForStream().read(
                             Consumer.from("g1", "c1"),
                             StreamReadOptions.empty().count(1).block(Duration.ofSeconds(2)),
-                            StreamOffset.create("stream.orders", ReadOffset.from("0"))
+                            StreamOffset.create(STREAM_KEY, ReadOffset.from("0"))
                     );
                     //2.获取阻塞队列中的订单消息
-                    if(recordList == null) continue;
-                    MapRecord<String, Object, Object> map = recordList.get(0);
+                    if(recordList == null || recordList.isEmpty()) continue;
+                    MapRecord<String, Object, Object> record = recordList.get(0);
                     //3.获取订单信息
-                    VoucherOrder voucherOrder = BeanUtil.toBean(map, VoucherOrder.class);
+                    VoucherOrder voucherOrder = BeanUtil.mapToBean(record.getValue(), VoucherOrder.class,true);
                     //4.XCAK 处理处理队列中的订单信息
-                    stringRedisTemplate.opsForStream().acknowledge("stream.orders",map);
+                    stringRedisTemplate.opsForStream().acknowledge(STREAM_KEY,GROUP_NAME,record.getId());
                 } catch (Exception e) {
+                    log.error("处理pending消息失败！", e);
                     try {
-                        Thread.sleep(50);
+                        Thread.sleep(2000L);
                     } catch (InterruptedException ex) {
                         Thread.currentThread().interrupt();
                         break;
