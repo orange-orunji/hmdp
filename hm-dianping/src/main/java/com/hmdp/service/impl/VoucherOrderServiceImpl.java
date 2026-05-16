@@ -64,7 +64,6 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
     //初始化代理对象和提交线程任务
     @PostConstruct
     public void init(){
-       proxy = (IVoucherOrderService) AopContext.currentProxy();
        executor.submit(runnable);
     }
 
@@ -85,20 +84,19 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
     //创建全局类的代理对象
     IVoucherOrderService proxy;
 
-    private static final String USER_ID = "lock:shop:";
     /**
      * 秒杀优惠券
      * @param voucherId
      * @return
      */
     @Override
-    public Object seckillVoucher(Long voucherId) throws InterruptedException {
+    public Result seckillVoucher(Long voucherId) throws InterruptedException {
         //1.lua脚本实现秒杀库存,一人一单是否抢购成功
         Long l = stringRedisTemplate.execute(
                 SECKILL,
                 Collections.emptyList(),
-                voucherId,
-                UserHolder.getUser().getId()
+                voucherId.toString(),
+                UserHolder.getUser().getId().toString()
         );
         long r = l.intValue();
         //2.判断是否抢购成功
@@ -106,13 +104,13 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         if(r!=0){
             return Result.fail(r==1?"库存不足！":"请勿重复下单！");
         }
-        //3 基于阻塞队列来实现存储
+        //3. 基于阻塞队列来实现存储
         long orderId = redisIdWorker.nextId("order");
         VoucherOrder voucherOrder = new VoucherOrder();
         voucherOrder.setId(orderId);
         voucherOrder.setUserId(UserHolder.getUser().getId());
         voucherOrder.setVoucherId(voucherId);
-
+        if (proxy==null)  proxy = (IVoucherOrderService) AopContext.currentProxy();
         queue.put(voucherOrder);
         return Result.ok(orderId);
     }

@@ -20,7 +20,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     //InterceptorRegistry注册器对象
     @Override
     public void addInterceptors(@NonNull InterceptorRegistry registry) {
-        registry.addInterceptor(new LoginInterceptor())
+        registry.addInterceptor(new LoginInterceptor(stringRedisTemplate))
                 .excludePathPatterns("/user/login"
                         , "/user/code"
                         , "/shop/**"
