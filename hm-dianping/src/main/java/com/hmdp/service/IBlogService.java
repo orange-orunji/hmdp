@@ -3,6 +3,8 @@ package com.hmdp.service;
 import com.hmdp.entity.Blog;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  *  服务类
@@ -13,4 +15,17 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IBlogService extends IService<Blog> {
 
+    /**
+     * 查询最热博客
+     * @param current
+     * @return
+     */
+    List<Blog> queryHotBlogs(Integer current);
+
+    /**
+     * 查询博客详情
+     * @param id
+     * @return
+     */
+    Object queryBlog(Long id);
 }
