@@ -64,8 +64,23 @@ public class BlogController {
         return Result.ok(blogService.queryHotBlogs(current));
     }
 
+    /**
+     * 查询博客详情
+     * @param id
+     * @return
+     */
     @GetMapping("/{id}")
     public Result queryBlogById(@PathVariable Long id){
         return Result.ok(blogService.queryBlog(id));
+    }
+
+    /**
+     * 查询点赞排行榜
+     * @param id
+     * @return
+     */
+    @GetMapping("/likes/{id}")
+    public Result queryBlogLikes(@PathVariable Long id){
+        return blogService.queryBlogLikes(id);
     }
 }

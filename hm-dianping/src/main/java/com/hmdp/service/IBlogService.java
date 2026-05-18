@@ -36,4 +36,11 @@ public interface IBlogService extends IService<Blog> {
      * @return
      */
     Result isLiked(Long id);
+
+    /**
+     * 查询点赞
+     * @param id
+     * @return
+     */
+    Result queryBlogLikes(Long id);
 }
