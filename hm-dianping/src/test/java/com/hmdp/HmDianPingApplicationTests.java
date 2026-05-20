@@ -76,4 +76,18 @@ class HmDianPingApplicationTests {
 
         }
     }
+
+    @Test
+    void testLongLong(){
+        String[] values = new String[1000];
+        int j;
+        for (int i = 0; i < 1000000; i++) {
+            j = i % 1000;
+            values[j] = values[j] + i;
+            if(j == 999){
+                stringRedisTemplate.opsForHyperLogLog().add("hl2",values);
+            }
+        }
+        System.out.println(stringRedisTemplate.opsForHyperLogLog().size("hl2"));
+    }
 }
