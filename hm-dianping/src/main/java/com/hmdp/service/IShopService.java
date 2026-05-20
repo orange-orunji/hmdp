@@ -1,5 +1,6 @@
 package com.hmdp.service;
 
+import com.hmdp.dto.Result;
 import com.hmdp.entity.Shop;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -26,4 +27,14 @@ public interface IShopService extends IService<Shop> {
      * @return 商铺id
      */
     void updateShop(Shop shop);
+
+    /**
+     * 根据商铺类型
+     * @param typeId
+     * @param current
+     * @param size
+     * @param distance
+     * @return
+     */
+    Result queryByPage(Integer typeId, Integer current, double size, double distance);
 }
