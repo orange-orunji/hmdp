@@ -13,14 +13,21 @@ import com.hmdp.service.IUserService;
 import com.hmdp.utils.RedisConstants;
 import com.hmdp.utils.RegexUtils;
 import com.hmdp.utils.SystemConstants;
+import com.hmdp.utils.UserHolder;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.format.datetime.joda.LocalDateTimeParser;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -105,6 +112,59 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 TimeUnit.MINUTES);
         return Result.ok(token);
     }
+
+    /**
+     * 签到功能
+     * @return
+     */
+    @Override
+    public Result sign() {
+        //1.获取当前用户
+        UserDTO user = UserHolder.getUser();
+        //2.获取当前日期
+        LocalDateTime current = LocalDateTime.now();
+        //3.定义字符串
+        String key = RedisConstants.USER_SIGN_KEY + user.getId() + current.format(DateTimeFormatter.ofPattern("yyyyMM"));
+        //4.获取当前日在当月第几天
+        int day = current.getDayOfMonth();
+        //5.签到
+        stringRedisTemplate.opsForValue().setBit(key, day - 1, true);
+        return Result.ok();
+    }
+
+    /**
+     * 签到统计功能
+     * @return
+     */
+    @Override
+    public Result signCount() {
+        //1.获取当前用户
+        UserDTO user = UserHolder.getUser();
+        //2.获取当前日期
+        LocalDateTime current = LocalDateTime.now();
+        //3.定义字符串
+        String key = RedisConstants.USER_SIGN_KEY + user.getId() + current.format(DateTimeFormatter.ofPattern("yyyyMM"));
+        //4.获取当前日在当月第几天
+        int dayOfMonth = current.getDayOfMonth();
+        //5.获取当月签到信息
+        List<Long> lists =
+                stringRedisTemplate.opsForValue()
+                        .bitField(key,BitFieldSubCommands
+                                .create().get(BitFieldSubCommands.BitFieldType.unsigned(dayOfMonth)).valueAt(0));
+        //6.统计连续签到次数
+        if(lists == null || lists.isEmpty()){
+            return Result.ok(0);
+        }
+        Long l = lists.get(0);
+        int count = 0;
+        //统计
+        while ((l & 1) != 0) {
+            count++;
+            l >>>= 1;
+        }
+        return Result.ok(count);
+    }
+
 
     /**
      * 创建新用户

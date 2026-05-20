@@ -32,4 +32,16 @@ public interface IUserService extends IService<User> {
      * @return 登录结果
      */
     Result login(LoginFormDTO loginForm, HttpSession session);
+
+    /**
+     * 签到功能
+     * @return 签到结果
+     */
+    Result sign();
+
+    /**
+     * 统计签到功能
+     * @return 签到结果
+     */
+    Result signCount();
 }
