@@ -1,4 +1,3 @@
-```markdown
 # 黑马点评 - 本地生活服务点评平台
 
 > 一个基于 Spring Boot + Redis + MySQL 的实战项目，类似大众点评的基础功能实现。
