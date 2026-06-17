@@ -180,6 +180,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         long orderId = redisIdWorker.nextId("order");
         //1.lua脚本实现秒杀库存,一人一单是否抢购成功
         Long l = stringRedisTemplate.execute(
+                //lua脚本引用
                 SECKILL,
                 Collections.emptyList(),
                 voucherId.toString(),
