@@ -5,12 +5,15 @@ spring:
     name: hmdp
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/hmdp?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+#    192.168.161.128
+#    Fjw200511071
+    url: jdbc:mysql://mysql-hmdp:3306/hmdp?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root
-    password: Fjw200511071
+    password: Ww2301079399@
   redis:
-    host: localhost
+    host: redis-hmdp
     port: 6379
+    password: Ww2301079399@
 #    password: 123321
     lettuce:
       pool:
@@ -25,3 +28,8 @@ mybatis-plus:
 logging:
   level:
     com.hmdp: debug
+
+    #redission配置
+redisson:
+  address: redis://redis-hmdp:6379
+  password: Ww2301079399@
