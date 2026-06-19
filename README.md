@@ -15,7 +15,7 @@
 | 后端框架 | Spring Boot 2.3.12 | 核心业务逻辑 |
 | ORM | MyBatis Plus | 数据库操作 |
 | 数据库 | MySQL 8.0 | 持久化存储 |
-| 缓存 | Redis 8.0+ | GEO 位置搜索、HyperLogLog UV 统计、Lua 库存扣减 |
+| 缓存 | Redis 7.0+ | GEO 位置搜索、HyperLogLog UV 统计、Lua 库存扣减 |
 | 前端 | Vue.js + Element UI + Axios | 单页面应用 |
 | Web 服务器 | Nginx 1.18.0 | 前端部署、反向代理 |
 | 认证 | JWT + 拦截器 | 登录校验、ThreadLocal 线程隔离 |
@@ -57,7 +57,7 @@ hmdp/
 - JDK 17+
 - MySQL 8.0+
 - Redis 7.0+
-- Nginx 1.18.0
+- Nginx 1.18.0+
 - Maven 3.6+
 
 ### 本地运行
