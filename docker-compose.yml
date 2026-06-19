@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: <YOUR MYSQL PASSWORD>
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    container_name: mysql-hmdp
+    networks:
+      - hmdp-net
+    restart: always
+  redis:
+    image: redis:latest
+    command: redis-server --requirepass  <YOUR REDIS PASSWORD>
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    container_name: redis-hmdp
+    networks:
+      - hmdp-net
+    restart: always
+  backend:
+    build: ./hm-dianping
+    ports:
+      - "8081:8081"
+    depends_on:
+      - mysql
+      - redis
+    environment:
+      SPRING_DATASOURCE_URL: "jdbc:mysql://mysql:3306/hmdp?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true"
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: <YOUR MYSQL PASSWORD>
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+    networks:
+      - hmdp-net
+    restart: always
+  nginx:
+    image: nginx:latest
+    depends_on:
+      - backend
+#  挂载数据
+    volumes:
+      - ./hmdp:/usr/share/nginx/html
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+#  暴露后端接口
+    ports:
+      - "80:80"
+    networks:
+      - hmdp-net
+    container_name: nginx-hmdp
+    restart: always
+#    挂载数据卷
+volumes:
+  mysql-data:
+  redis-data:
+#    定义统一网络
+networks:
+  hmdp-net:
