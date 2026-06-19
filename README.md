@@ -1,12 +1,9 @@
 # 知味·本地生活智能推荐 - 本地生活服务点评平台
 
+## 📖 项目概述
 > 一个基于 Spring Boot + Redis + MySQL 的实战项目，类似大众点评的基础功能实现。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-## 📖 项目概述
-
-### 代做哦
 
 ## 🛠 技术栈
 
