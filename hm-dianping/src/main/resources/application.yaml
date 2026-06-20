@@ -21,12 +21,19 @@ spring:
         max-idle: 10
         min-idle: 1
         time-between-eviction-runs: 10s
+# rabbitMQ配置设置
   rabbitmq:
     host: 192.168.161.128
     port: 5672
     username: hmdp
     password: 123
     virtual-host: /hmdp
+    listener:
+      simple:
+        acknowledge-mode: manual
+        prefetch: 5
+        concurrency: 5
+        max-concurrent-consumers: 10
   jackson:
     default-property-inclusion: non_null # JSON处理时忽略非空字段
 mybatis-plus:
