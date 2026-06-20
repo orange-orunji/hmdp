@@ -1,4 +1,4 @@
-package src.main.java.com.hmdp.config;
+package com.hmdp.config;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;

@@ -1,7 +1,7 @@
-package src.main.java.com.hmdp.service;
+package com.hmdp.service;
 
-import src.main.java.com.hmdp.dto.Result;
-import src.main.java.com.hmdp.entity.Blog;
+import com.hmdp.dto.Result;
+import com.hmdp.entity.Blog;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;

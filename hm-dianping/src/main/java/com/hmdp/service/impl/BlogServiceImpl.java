@@ -1,20 +1,20 @@
-package src.main.java.com.hmdp.service.impl;
+package com.hmdp.service.impl;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import src.main.java.com.hmdp.dto.Result;
-import src.main.java.com.hmdp.dto.ScrollResult;
-import src.main.java.com.hmdp.dto.UserDTO;
-import src.main.java.com.hmdp.entity.Blog;
-import src.main.java.com.hmdp.entity.Follow;
-import src.main.java.com.hmdp.entity.User;
-import src.main.java.com.hmdp.mapper.BlogMapper;
-import src.main.java.com.hmdp.service.IBlogService;
+import com.hmdp.dto.Result;
+import com.hmdp.dto.ScrollResult;
+import com.hmdp.dto.UserDTO;
+import com.hmdp.entity.Blog;
+import com.hmdp.entity.Follow;
+import com.hmdp.entity.User;
+import com.hmdp.mapper.BlogMapper;
+import com.hmdp.service.IBlogService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import src.main.java.com.hmdp.service.IFollowService;
-import src.main.java.com.hmdp.service.IUserService;
-import src.main.java.com.hmdp.utils.RedisConstants;
-import src.main.java.com.hmdp.utils.SystemConstants;
-import src.main.java.com.hmdp.utils.UserHolder;
+import com.hmdp.service.IFollowService;
+import com.hmdp.service.IUserService;
+import com.hmdp.utils.RedisConstants;
+import com.hmdp.utils.SystemConstants;
+import com.hmdp.utils.UserHolder;
 import jodd.util.StringUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -26,14 +26,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * <p>
- *  服务实现类
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
- */
 @Service
 public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IBlogService {
 

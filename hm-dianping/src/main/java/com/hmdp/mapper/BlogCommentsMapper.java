@@ -1,6 +1,6 @@
-package src.main.java.com.hmdp.mapper;
+package com.hmdp.mapper;
 
-import src.main.java.com.hmdp.entity.BlogComments;
+import com.hmdp.entity.BlogComments;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

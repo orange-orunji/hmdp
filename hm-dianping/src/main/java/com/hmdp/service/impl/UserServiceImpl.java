@@ -1,19 +1,19 @@
-package src.main.java.com.hmdp.service.impl;
+package com.hmdp.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import src.main.java.com.hmdp.dto.LoginFormDTO;
-import src.main.java.com.hmdp.dto.Result;
-import src.main.java.com.hmdp.dto.UserDTO;
-import src.main.java.com.hmdp.entity.User;
-import src.main.java.com.hmdp.mapper.UserMapper;
-import src.main.java.com.hmdp.service.IUserService;
-import src.main.java.com.hmdp.utils.RedisConstants;
-import src.main.java.com.hmdp.utils.RegexUtils;
-import src.main.java.com.hmdp.utils.SystemConstants;
-import src.main.java.com.hmdp.utils.UserHolder;
+import com.hmdp.dto.LoginFormDTO;
+import com.hmdp.dto.Result;
+import com.hmdp.dto.UserDTO;
+import com.hmdp.entity.User;
+import com.hmdp.mapper.UserMapper;
+import com.hmdp.service.IUserService;
+import com.hmdp.utils.RedisConstants;
+import com.hmdp.utils.RegexUtils;
+import com.hmdp.utils.SystemConstants;
+import com.hmdp.utils.UserHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.connection.BitFieldSubCommands;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -28,14 +28,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-/**
- * <p>
- * 服务实现类
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
- */
+
 @Slf4j
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {

@@ -1,4 +1,4 @@
-package src.main.java.com.hmdp.dto;
+package com.hmdp.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

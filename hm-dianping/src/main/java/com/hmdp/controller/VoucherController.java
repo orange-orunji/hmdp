@@ -1,9 +1,9 @@
-package src.main.java.com.hmdp.controller;
+package com.hmdp.controller;
 
 
-import src.main.java.com.hmdp.dto.Result;
-import src.main.java.com.hmdp.entity.Voucher;
-import src.main.java.com.hmdp.service.IVoucherService;
+import com.hmdp.dto.Result;
+import com.hmdp.entity.Voucher;
+import com.hmdp.service.IVoucherService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;

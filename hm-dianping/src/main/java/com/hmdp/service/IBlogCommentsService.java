@@ -1,6 +1,6 @@
-package src.main.java.com.hmdp.service;
+package com.hmdp.service;
 
-import src.main.java.com.hmdp.entity.BlogComments;
+import com.hmdp.entity.BlogComments;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

@@ -1,4 +1,4 @@
-package src.main.java.com.hmdp.utils;
+package com.hmdp.utils;
 
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.format.annotation.DateTimeFormat;

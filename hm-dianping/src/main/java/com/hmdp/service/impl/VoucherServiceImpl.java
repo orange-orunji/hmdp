@@ -1,13 +1,13 @@
-package src.main.java.com.hmdp.service.impl;
+package com.hmdp.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import src.main.java.com.hmdp.dto.Result;
-import src.main.java.com.hmdp.entity.Voucher;
-import src.main.java.com.hmdp.mapper.VoucherMapper;
-import src.main.java.com.hmdp.entity.SeckillVoucher;
-import src.main.java.com.hmdp.service.ISeckillVoucherService;
-import src.main.java.com.hmdp.service.IVoucherService;
-import src.main.java.com.hmdp.utils.RedisConstants;
+import com.hmdp.dto.Result;
+import com.hmdp.entity.Voucher;
+import com.hmdp.mapper.VoucherMapper;
+import com.hmdp.entity.SeckillVoucher;
+import com.hmdp.service.ISeckillVoucherService;
+import com.hmdp.service.IVoucherService;
+import com.hmdp.utils.RedisConstants;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,14 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.List;
 
-/**
- * <p>
- *  服务实现类
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
- */
 @Service
 public class VoucherServiceImpl extends ServiceImpl<VoucherMapper, Voucher> implements IVoucherService {
 

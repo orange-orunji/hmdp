@@ -1,8 +1,8 @@
-package src.main.java.com.hmdp.utils;
+package com.hmdp.utils;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
-import src.main.java.com.hmdp.dto.UserDTO;
+import com.hmdp.dto.UserDTO;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;

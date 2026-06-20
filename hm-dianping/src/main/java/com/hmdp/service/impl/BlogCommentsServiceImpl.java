@@ -1,8 +1,8 @@
-package src.main.java.com.hmdp.service.impl;
+package com.hmdp.service.impl;
 
-import src.main.java.com.hmdp.entity.BlogComments;
-import src.main.java.com.hmdp.mapper.BlogCommentsMapper;
-import src.main.java.com.hmdp.service.IBlogCommentsService;
+import com.hmdp.entity.BlogComments;
+import com.hmdp.mapper.BlogCommentsMapper;
+import com.hmdp.service.IBlogCommentsService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

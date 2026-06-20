@@ -1,12 +1,12 @@
-package src.main.java.com.hmdp.controller;
+package com.hmdp.controller;
 
 
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import src.main.java.com.hmdp.dto.Result;
-import src.main.java.com.hmdp.entity.Shop;
-import src.main.java.com.hmdp.service.IShopService;
-import src.main.java.com.hmdp.utils.SystemConstants;
+import com.hmdp.dto.Result;
+import com.hmdp.entity.Shop;
+import com.hmdp.service.IShopService;
+import com.hmdp.utils.SystemConstants;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;

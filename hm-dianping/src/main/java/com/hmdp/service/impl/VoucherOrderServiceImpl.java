@@ -1,15 +1,15 @@
-package src.main.java.com.hmdp.service.impl;
+package com.hmdp.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import src.main.java.com.hmdp.dto.Result;
-import src.main.java.com.hmdp.entity.VoucherOrder;
-import src.main.java.com.hmdp.mapper.VoucherOrderMapper;
-import src.main.java.com.hmdp.service.ISeckillVoucherService;
-import src.main.java.com.hmdp.service.IVoucherOrderService;
+import com.hmdp.dto.Result;
+import com.hmdp.entity.VoucherOrder;
+import com.hmdp.mapper.VoucherOrderMapper;
+import com.hmdp.service.ISeckillVoucherService;
+import com.hmdp.service.IVoucherOrderService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import src.main.java.com.hmdp.service.IVoucherService;
-import src.main.java.com.hmdp.utils.RedisIdWorker;
-import src.main.java.com.hmdp.utils.UserHolder;
+import com.hmdp.service.IVoucherService;
+import com.hmdp.utils.RedisIdWorker;
+import com.hmdp.utils.UserHolder;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RedissonClient;
 import org.springframework.aop.framework.AopContext;
@@ -28,14 +28,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.*;
 
-/**
- * <p>
- *  服务实现类
- * </p>
- *
- * @author 虎哥
- * @since 2021-12-22
- */
 @Service
 @Slf4j
 public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, VoucherOrder> implements IVoucherOrderService {

@@ -1,7 +1,7 @@
-package src.main.java.com.hmdp.config;
+package com.hmdp.config;
 
-import src.main.java.com.hmdp.utils.LoginInterceptor;
-import src.main.java.com.hmdp.utils.ReflashTokenInterceptor;
+import com.hmdp.utils.LoginInterceptor;
+import com.hmdp.utils.ReflashTokenInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.lang.NonNull;
