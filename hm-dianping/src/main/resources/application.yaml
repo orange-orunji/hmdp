@@ -25,7 +25,7 @@ spring:
     host: 192.168.161.128
     port: 5672
     username: hmdp
-    password: Ww2301079399@
+    password: 123
     virtual-host: /hmdp
   jackson:
     default-property-inclusion: non_null # JSON处理时忽略非空字段
@@ -37,5 +37,5 @@ logging:
 
     #redission配置
 redisson:
-  address: redis://redis-hmdp:6379
+  address: redis://192.168.161.128:6379
   password: Ww2301079399@
