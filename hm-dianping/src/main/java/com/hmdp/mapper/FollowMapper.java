@@ -1,6 +1,6 @@
-package com.hmdp.mapper;
+package src.main.java.com.hmdp.mapper;
 
-import com.hmdp.entity.Follow;
+import src.main.java.com.hmdp.entity.Follow;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Insert;
 

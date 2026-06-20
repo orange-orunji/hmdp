@@ -1,14 +1,13 @@
-package com.hmdp.utils;
+package src.main.java.com.hmdp.utils;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
-import com.hmdp.dto.UserDTO;
+import src.main.java.com.hmdp.dto.UserDTO;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;

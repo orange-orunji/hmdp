@@ -1,9 +1,9 @@
-package com.hmdp.service;
+package src.main.java.com.hmdp.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.hmdp.dto.LoginFormDTO;
-import com.hmdp.dto.Result;
-import com.hmdp.entity.User;
+import src.main.java.com.hmdp.dto.LoginFormDTO;
+import src.main.java.com.hmdp.dto.Result;
+import src.main.java.com.hmdp.entity.User;
 
 import javax.servlet.http.HttpSession;
 

@@ -1,6 +1,6 @@
-package com.hmdp.service;
+package src.main.java.com.hmdp.service;
 
-import com.hmdp.entity.UserInfo;
+import src.main.java.com.hmdp.entity.UserInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

@@ -1,6 +1,6 @@
-package com.hmdp.mapper;
+package src.main.java.com.hmdp.mapper;
 
-import com.hmdp.entity.SeckillVoucher;
+import src.main.java.com.hmdp.entity.SeckillVoucher;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

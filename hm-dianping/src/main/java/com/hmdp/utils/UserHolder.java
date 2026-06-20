@@ -1,6 +1,6 @@
-package com.hmdp.utils;
+package src.main.java.com.hmdp.utils;
 
-import com.hmdp.dto.UserDTO;
+import src.main.java.com.hmdp.dto.UserDTO;
 
 public class UserHolder {
     private static final ThreadLocal<UserDTO> tl = new ThreadLocal<>();

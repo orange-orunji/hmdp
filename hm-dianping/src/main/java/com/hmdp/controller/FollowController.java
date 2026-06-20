@@ -1,8 +1,8 @@
-package com.hmdp.controller;
+package src.main.java.com.hmdp.controller;
 
 
-import com.hmdp.dto.Result;
-import com.hmdp.service.IFollowService;
+import src.main.java.com.hmdp.dto.Result;
+import src.main.java.com.hmdp.service.IFollowService;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;

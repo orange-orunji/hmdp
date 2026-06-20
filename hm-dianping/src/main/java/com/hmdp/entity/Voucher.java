@@ -1,4 +1,4 @@
-package com.hmdp.entity;
+package src.main.java.com.hmdp.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;

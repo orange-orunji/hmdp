@@ -1,9 +1,9 @@
-package com.hmdp.controller;
+package src.main.java.com.hmdp.controller;
 
 
-import com.hmdp.dto.Result;
-import com.hmdp.entity.ShopType;
-import com.hmdp.service.IShopTypeService;
+import src.main.java.com.hmdp.dto.Result;
+import src.main.java.com.hmdp.entity.ShopType;
+import src.main.java.com.hmdp.service.IShopTypeService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

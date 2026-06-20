@@ -5,13 +5,16 @@ spring:
     name: hmdp
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://mysql-hmdp:3306/hmdp?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+#    192.168.161.128
+#    Fjw200511071
+    url: jdbc:mysql://192.168.161.128:3306/hmdp?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     username: root
-    password: <YOUR PASSWORD>
+    password: Ww2301079399@
   redis:
-    host: redis-hmdp
+    host: 192.168.161.128
     port: 6379
-    password: <YOUR PASSWORD>
+    password: Ww2301079399@
+#    password: 123321
     lettuce:
       pool:
         max-active: 10
@@ -19,9 +22,9 @@ spring:
         min-idle: 1
         time-between-eviction-runs: 10s
   jackson:
-    default-property-inclusion: non_null 
+    default-property-inclusion: non_null # JSON处理时忽略非空字段
 mybatis-plus:
-  type-aliases-package: com.hmdp.entity 
+  type-aliases-package: com.hmdp.entity # 别名扫描包
 logging:
   level:
     com.hmdp: debug
@@ -29,4 +32,4 @@ logging:
     #redission配置
 redisson:
   address: redis://redis-hmdp:6379
-  password: <YOUR PASSWORD>
+  password: Ww2301079399@
