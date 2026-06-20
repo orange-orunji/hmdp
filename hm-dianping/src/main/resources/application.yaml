@@ -21,6 +21,12 @@ spring:
         max-idle: 10
         min-idle: 1
         time-between-eviction-runs: 10s
+  rabbitmq:
+    host: 192.168.161.128
+    port: 5672
+    username: hmdp
+    password: Ww2301079399@
+    virtual-host: /hmdp
   jackson:
     default-property-inclusion: non_null # JSON处理时忽略非空字段
 mybatis-plus:
