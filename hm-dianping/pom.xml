@@ -96,6 +96,11 @@
             <artifactId>redisson</artifactId>
             <version>3.16.2</version>
         </dependency>
+<!--    rabbitMq-->
+<!--        <dependency>-->
+<!--            <groupId></groupId>-->
+<!--            <artifactId></artifactId>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>
