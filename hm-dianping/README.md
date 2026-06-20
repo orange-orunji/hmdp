@@ -1,12 +1,9 @@
 # 知味·本地生活智能推荐 - 本地生活服务点评平台
 
+## 📖 项目概述
 > 一个基于 Spring Boot + Redis + MySQL 的实战项目，类似大众点评的基础功能实现。
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-## 📖 项目概述
-
-### 代做哦
 
 ## 🛠 技术栈
 
@@ -119,9 +116,7 @@ docker exec -i mysql-container mysql -uroot -p<YOUR PASSWORD> < hmdp.sql
 
 ## 📝 更新日志
 -  **2026-06-19**:docker一键部署
--  **2026-06-18**:Linux系统部署
--  **2026-06-17**:初始化 README
--  **2026-06-17**:部署到Linux服务器
+-  **2026-06-17**:部署到Linux服务器、初始化 README
 -  **2026-05-20**:新增 Redis HyperLogLog UV 统计与 GEO 附近店铺滚动查询
 -  **2026-05-19**:开发共同关注功能
 -  **2026-05-14**:上传核心业务代码
