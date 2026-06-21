@@ -43,6 +43,11 @@ public class VoucherOrder implements Serializable {
     private Long voucherId;
 
     /**
+     * 商铺id
+     */
+    private Long shopId;
+
+    /**
      * 支付方式 1：余额支付；2：支付宝；3：微信
      */
     private Integer payType;

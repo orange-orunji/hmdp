@@ -69,6 +69,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
 /**
  * 线程池相关做法
  */
+//===============================================================================================================================
     //新创阻塞队列(JVM虚拟机实现)
 //    BlockingQueue<VoucherOrder> queue = new ArrayBlockingQueue<>(1024 * 1024);
     //创建线程池
@@ -94,10 +95,12 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
 //        if (!groupInitialized) extracted();
 //        executor.submit(runnable);
 //    }
+    //====================================================================================================================================
     /**
      * 创建消费者组
      * @return
      */
+    //==================================================================================================================================
 //    private void extracted() {
 //        try {
 //            // 创建消费者组，从队列开头(0)开始消费
@@ -109,11 +112,12 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
 //            log.info("消费者组 {} 已存在，无需重复创建", GROUP_NAME);
 //        }
 //    }
-
+//========================================================================================================================================
 /**
     线程池任务
  @return
  **/
+//========================================================================================================================================
 //    Runnable runnable = new Runnable() {
 //        @Override
 //        public void run() {
@@ -177,9 +181,12 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
 //            }
 //        }
 //    };
-
+//
+//
     //创建全局类的代理对象
-    IVoucherOrderService proxy;
+//    IVoucherOrderService proxy;
+//==========================================================================================================================================================================================
+
 
     /**
      * 秒杀优惠券
@@ -211,6 +218,8 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         voucherOrder.setId(orderId);
         voucherOrder.setVoucherId(voucherId);
         voucherOrder.setUserId(user.getId());
+        // 从券信息中获取店铺id
+        voucherOrder.setShopId(voucherService.getById(voucherId).getShopId());
         rabbitTemplate.convertAndSend("order.exchange","order.generate",voucherOrder);
         return Result.ok(orderId);
     }
