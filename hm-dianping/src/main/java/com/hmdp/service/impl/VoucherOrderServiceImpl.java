@@ -218,6 +218,7 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         voucherOrder.setId(orderId);
         voucherOrder.setVoucherId(voucherId);
         voucherOrder.setUserId(user.getId());
+        voucherOrder.setStatus(1);
         // 从券信息中获取店铺id
         voucherOrder.setShopId(voucherService.getById(voucherId).getShopId());
         rabbitTemplate.convertAndSend("order.exchange","order.generate",voucherOrder);
