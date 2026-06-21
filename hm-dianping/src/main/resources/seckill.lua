@@ -27,5 +27,5 @@ end
 redis.call('incrby',stockKey,-1)
 --6.记录用户并返回
 redis.call('sadd',orderKey,userId)
-redis.call('xadd','stream.orders','*','voucherId',voucherId,'userId',userId,'id',orderId)
+--redis.call('xadd','stream.orders','*','voucherId',voucherId,'userId',userId,'id',orderId)
 return 0
