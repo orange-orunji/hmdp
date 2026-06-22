@@ -3,6 +3,7 @@ package com.hmdp.config;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
@@ -50,9 +51,13 @@ public class RabbitMqConfig {
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory){
+    public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory,MessageConverter messageConverter){
+            // 强转为 CachingConnectionFactory 开启 publisher returns
+        if (connectionFactory instanceof CachingConnectionFactory) {
+          ((CachingConnectionFactory) connectionFactory).setPublisherReturns(true);
+        }
         RabbitTemplate template = new RabbitTemplate(connectionFactory);
-        template.setMessageConverter(messageConverter());//添加序列化器
+        template.setMessageConverter(messageConverter);//添加序列化器
 //      1.确认返回:消息是否到达 Exchange
         template.setConfirmCallback((correlationData, ack, cause) -> {
             if (!ack) {
@@ -68,13 +73,15 @@ public class RabbitMqConfig {
 //      2.退回返回:消息路由不到队列
         template.setReturnsCallback(returned -> {
             log.error("消息路由失败: exchange={}, routingKey={}, replyCode={}, body={}",
-            returned.getExchange(), returned.getRoutingKey(),
+                 returned.getExchange(), returned.getRoutingKey(),
             returned.getReplyCode(), returned.getMessage());
             String body = new String(returned.getMessage().getBody());
             stringRedisTemplate.opsForSet().add("order:fail",
         "exchange:" + returned.getExchange() + " routingKey:" + returned.getRoutingKey() + " body:" + body);
 
         });
+        template.setReturnsCallback(returned -> {
+});
 
 
 //        将returnCallback 生效

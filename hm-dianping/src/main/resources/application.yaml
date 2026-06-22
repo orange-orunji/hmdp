@@ -28,6 +28,7 @@ spring:
     username: hmdp
     password: 123
     virtual-host: /hmdp
+    publisher-returns: true
     listener:
       simple:
         acknowledge-mode: manual
