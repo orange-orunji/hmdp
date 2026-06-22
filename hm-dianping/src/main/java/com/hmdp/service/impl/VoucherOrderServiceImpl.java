@@ -58,13 +58,19 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
     private static final String GROUP_NAME = "g1";
     private static final String CONSUMER_NAME = "c1";    //创建lua脚ben
     private static final DefaultRedisScript<Long> SECKILL;
+    private static final DefaultRedisScript<Long> LIMIT;
     private final boolean running = true;
     // 消费者组是否已经初始化的标记
     private volatile boolean groupInitialized = false;
     static {
+//        初始化秒杀脚本
         SECKILL = new DefaultRedisScript<>();
         SECKILL.setLocation(new ClassPathResource("seckill.lua"));
         SECKILL.setResultType(Long.class);
+//        初始化限流脚本
+        LIMIT = new DefaultRedisScript<>();
+        LIMIT.setLocation(new ClassPathResource("rate_limit.lua"));
+        LIMIT.setResultType(Long.class);
     }
 /**
  * 线程池相关做法
@@ -201,11 +207,22 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
             return Result.fail("请先登录");
         }
         long orderId = redisIdWorker.nextId("order");
-//=================================判断是否限流,Java+RedisTemplate=================================
-        if (rateLimit(user.getId()) != 1 ){
+////=================================判断是否限流,Java+RedisTemplate=================================
+//        if (rateLimit(user.getId()) != 1 ){
+//            return Result.fail("活动太火爆，请稍后再试");
+//        }
+////===============================================================================================
+//================================滑动窗口限流,Lua脚本原子性处理==================================
+        Long l1 = stringRedisTemplate.execute(
+                LIMIT,
+                Collections.emptyList(),
+                user.getId().toString(),
+                System.currentTimeMillis()
+        );
+        if(l1 == null ||l1 !=1){
             return Result.fail("活动太火爆，请稍后再试");
         }
-//===============================================================================================
+//================================================================================
         //1.lua脚本实现秒杀库存,一人一单是否抢购成功
         Long l = stringRedisTemplate.execute(
                 //lua脚本引用
@@ -350,19 +367,19 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
      * @param userId
      * @return
      */
-    public Integer rateLimit(Long userId){
-        String key = "rate_limit:skill:" + userId;
-        long l = System.currentTimeMillis() ;
-//        移除一秒前的计数
-        stringRedisTemplate.opsForZSet().removeRange(key, 0, l - 1000);
-        Long card = stringRedisTemplate.opsForZSet().zCard(key);
-//        限制每秒请求5
-        if (card == null || card > 5) {
-            return 0;
-        }
-//        更新redis并放行
-        stringRedisTemplate.opsForZSet().add(key, String.valueOf(userId), l);
-        stringRedisTemplate.expire(key, 2, TimeUnit.SECONDS);
-        return 1;
-    }
+//    public Integer rateLimit(Long userId){
+//        String key = "rate_limit:skill:" + userId;
+//        long l = System.currentTimeMillis() ;
+////        移除一秒前的计数
+//        stringRedisTemplate.opsForZSet().removeRange(key, 0, l - 1000);
+//        Long card = stringRedisTemplate.opsForZSet().zCard(key);
+////        限制每秒请求5
+//        if (card == null || card > 5) {
+//            return 0;
+//        }
+////        更新redis并放行
+//        stringRedisTemplate.opsForZSet().add(key, String.valueOf(userId), l);
+//        stringRedisTemplate.expire(key, 2, TimeUnit.SECONDS);
+//        return 1;
+//    }
 }
