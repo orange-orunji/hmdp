@@ -201,6 +201,11 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
             return Result.fail("请先登录");
         }
         long orderId = redisIdWorker.nextId("order");
+//=================================判断是否限流,Java+RedisTemplate=================================
+        if (rateLimit(user.getId()) != 1 ){
+            return Result.fail("活动太火爆，请稍后再试");
+        }
+//===============================================================================================
         //1.lua脚本实现秒杀库存,一人一单是否抢购成功
         Long l = stringRedisTemplate.execute(
                 //lua脚本引用
@@ -338,5 +343,26 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         }
         // 保存订单
         save(voucher);
+    }
+
+    /**
+     * 秒杀活动限流
+     * @param userId
+     * @return
+     */
+    public Integer rateLimit(Long userId){
+        String key = "rate_limit:skill:" + userId;
+        long l = System.currentTimeMillis() ;
+//        移除一秒前的计数
+        stringRedisTemplate.opsForZSet().removeRange(key, 0, l - 1000);
+        Long card = stringRedisTemplate.opsForZSet().zCard(key);
+//        限制每秒请求5
+        if (card == null || card > 5) {
+            return 0;
+        }
+//        更新redis并放行
+        stringRedisTemplate.opsForZSet().add(key, String.valueOf(userId), l);
+        stringRedisTemplate.expire(key, 2, TimeUnit.SECONDS);
+        return 1;
     }
 }
