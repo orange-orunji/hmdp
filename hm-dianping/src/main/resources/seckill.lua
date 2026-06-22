@@ -13,8 +13,8 @@ local stockKey = "seckill:stock:" .. voucherId
 local orderKey = "seckill:order:" .. voucherId
 
 --3.判断库存是否充足
-local stock = redis.call('get',stockKey)
-if ( stock == false or tonumber(stock) <= 0 )then
+local stock = tonumber(redis.call('get',stockKey))
+if ( stock == nil or stock <= 0 )then
     return 1
 end
 --4.判断用户是否重复下单
@@ -24,7 +24,7 @@ if(redis.call('sismember',orderKey,userId)==1) then
 end
 
 --5.扣减库存
-redis.call('incrby',stockKey,-1)
+redis.call('set',stockKey, stock - 1)
 --6.记录用户并返回
 redis.call('sadd',orderKey,userId)
 --redis.call('xadd','stream.orders','*','voucherId',voucherId,'userId',userId,'id',orderId)
