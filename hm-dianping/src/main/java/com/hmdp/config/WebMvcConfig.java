@@ -28,8 +28,19 @@ public class WebMvcConfig implements WebMvcConfigurer {
                         , "/blog/hot"
                         , "/voucher/**"
                         , "upload/**"
+                        , "/doc.html"
+                        , "/webjars/**"
+                        , "/v3/api-docs/**"
+                        , "/swagger-resources/**"
+                        , "/swagger-ui/**"
                 ).order(1);
 
-        registry.addInterceptor(new ReflashTokenInterceptor(stringRedisTemplate)).order(0);
+        registry.addInterceptor(new ReflashTokenInterceptor(stringRedisTemplate))
+                .excludePathPatterns("/doc.html"
+                        , "/webjars/**"
+                        , "/v3/api-docs/**"
+                        , "/swagger-resources/**"
+                        , "/swagger-ui/**"
+                ).order(0);
     }
 }
