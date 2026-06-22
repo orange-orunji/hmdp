@@ -21,6 +21,7 @@ import org.springframework.amqp.rabbit.annotation.Exchange;
 import org.springframework.amqp.rabbit.annotation.Queue;
 import org.springframework.amqp.rabbit.annotation.QueueBinding;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.core.io.ClassPathResource;
@@ -246,7 +247,9 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
         voucherOrder.setStatus(1);
         // 从券信息中获取店铺id
         voucherOrder.setShopId(voucherService.getById(voucherId).getShopId());
-        rabbitTemplate.convertAndSend("order.exchange","order.generate",voucherOrder);
+        rabbitTemplate.convertAndSend("order.exchange","order.generate",
+                voucherOrder,new CorrelationData(String.valueOf(orderId)));
+                                //CorrelationData消息快递单号,用于给生产者处理确定是什么订单传过来的，便于后续维护
         return Result.ok(orderId);
     }
 //    @Override
