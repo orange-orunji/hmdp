@@ -74,7 +74,7 @@ public class OrderConsumer {
         catch (Exception e){
             log.error("订单处理失败，订单ID：{}", voucherOrder.getId(), e);
             channel.basicNack(consumerTag,false,false);
-            throw e;
+            return;
         }
         channel.basicAck(consumerTag,false);
     }

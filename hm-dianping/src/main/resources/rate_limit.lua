@@ -7,21 +7,23 @@
 --用户id
 local userId = ARGV[1]
 local curTime = ARGV[2]
+local limitCount = ARGV[3]
+local window = ARGV[4]
 
 --2.定义key值
 --限流key
-local rate_limit_key = "rate_limit:skill:" + userId
+local rate_limit_key = "rate_limit:skill:" .. userId
 --清理过期key
-redis.call("ZREMRANGEBYSCORE", rate_limit_key, 0, curTime - 1000)
+redis.call("ZREMRANGEBYSCORE", rate_limit_key, 0, curTime - window)
 
 
 --3.判断ZSet中的元素是否超过请求数
 local count = redis.call("ZCARD", rate_limit_key)
 --4.限流判断
-if   count == nil or count >= 5 then
+if   count == nil or count >= limitCount then
     return 0
 end
 --5.更新累计点击并放行
 redis.call("ZADD",rate_limit_key,curTime, userId)
-redis.call("EXPIRE",rate_limit_key, 2)
+redis.call("EXPIRE",rate_limit_key,  math.ceil(window / 1000) + 1)
 return 1

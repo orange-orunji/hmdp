@@ -213,11 +213,14 @@ public class VoucherOrderServiceImpl extends ServiceImpl<VoucherOrderMapper, Vou
 //        }
 ////===============================================================================================
 //================================滑动窗口限流,Lua脚本原子性处理==================================
+        int limitNum = 5,window = 1000;
         Long l1 = stringRedisTemplate.execute(
                 LIMIT,
                 Collections.emptyList(),
                 user.getId().toString(),
-                System.currentTimeMillis()
+                System.currentTimeMillis(),
+                String.valueOf(limitNum),
+                String.valueOf(window)
         );
         if(l1 == null ||l1 !=1){
             return Result.fail("活动太火爆，请稍后再试");
