@@ -172,8 +172,9 @@ docker exec -i mysql-container mysql -uroot -p<YOUR PASSWORD> < hmdp.sql
 ✔ 3. **消息队列异步化**  
    接入 RabbitMQ，将秒杀下单异步化，配合死信队列实现重试机制，平滑峰值流量。
 
-4. **分布式锁**  
-   使用 Redisson 实现可重入锁，确保一人一单、库存扣减等临界操作的线程安全。
+✔ 4. **分布式锁**  
+   使用 Redisson + Lua 脚本原子操作，确保一人一单、库存扣减等临界操作的线程安全。
+   已完成,替换成Lua脚本原则性等价替换
 
 5. **高性能搜索**  
    搭建 Elasticsearch 集群，支持全文检索、地理位置排序、搜索建议等高级功能。
