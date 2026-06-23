@@ -2,9 +2,14 @@ package com.hmdp.service.impl;
 
 import com.hmdp.dto.Result;
 import com.hmdp.dto.UserDTO;
+import com.hmdp.entity.Blog;
 import com.hmdp.entity.BlogComments;
 import com.hmdp.entity.User;
+import com.hmdp.entity.Notification;
 import com.hmdp.mapper.BlogCommentsMapper;
+import com.hmdp.service.IBlogService;
+import com.hmdp.service.INotificationService;
+
 import com.hmdp.service.IBlogCommentsService;
 import com.hmdp.service.IUserService;
 import com.hmdp.utils.UserHolder;
@@ -23,6 +28,10 @@ public class BlogCommentsServiceImpl extends ServiceImpl<BlogCommentsMapper, Blo
 
     @Resource
     private IUserService userService;
+    @Resource
+    private IBlogService blogService;
+    @Resource
+    private INotificationService notificationService;
 
     @Override
     public Result saveComment(BlogComments comment) {
@@ -36,6 +45,18 @@ public class BlogCommentsServiceImpl extends ServiceImpl<BlogCommentsMapper, Blo
         comment.setLiked(0);
         comment.setStatus(false);
         save(comment);
+        Blog blog = blogService.getById(comment.getBlogId());
+        if (blog != null && !blog.getUserId().equals(user.getId())) {
+            Notification n = new Notification();
+            n.setUserId(blog.getUserId());
+            n.setFromUserId(user.getId());
+            n.setType(2);
+            n.setRelatedId(comment.getBlogId());
+            n.setContent("评论了你的笔记");
+            n.setIsRead(false);
+            n.setCreateTime(LocalDateTime.now());
+            notificationService.save(n);
+        }
         return Result.ok(comment.getId());
     }
 

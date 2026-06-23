@@ -6,11 +6,13 @@ import com.hmdp.dto.ScrollResult;
 import com.hmdp.dto.UserDTO;
 import com.hmdp.entity.Blog;
 import com.hmdp.entity.Follow;
+import com.hmdp.entity.Notification;
 import com.hmdp.entity.User;
 import com.hmdp.mapper.BlogMapper;
 import com.hmdp.service.IBlogService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.hmdp.service.IFollowService;
+import com.hmdp.service.INotificationService;
 import com.hmdp.service.IUserService;
 import com.hmdp.utils.RedisConstants;
 import com.hmdp.utils.SystemConstants;
@@ -21,6 +23,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -35,7 +38,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
     private StringRedisTemplate stringRedisTemplate;
     @Resource
     private IFollowService followService;
-
+    @Resource
+    private INotificationService notificationService;
 
     @Override
     public List<Blog> queryHotBlogs(Integer current) {
@@ -89,20 +93,27 @@ public class BlogServiceImpl extends ServiceImpl<BlogMapper, Blog> implements IB
     public Result isLiked(Long id) {
         String userId = UserHolder.getUser().getId().toString();
         String key = RedisConstants.BLOG_LIKED_KEY + id;
-        // 判断当前用户是否点赞过该博客
         Double score = stringRedisTemplate.opsForZSet().score(key, userId);
         if(score == null) {
-            // 如果没有点赞
             boolean b = update().setSql("liked = liked + 1").eq("id", id).update();
-            // 更新缓存
             if(b){
                 stringRedisTemplate.opsForZSet().add(key, userId, System.currentTimeMillis());
+                Blog blog = getById(id);
+                if (blog != null && !blog.getUserId().equals(Long.valueOf(userId))) {
+                    Notification n = new Notification();
+                    n.setUserId(blog.getUserId());
+                    n.setFromUserId(Long.valueOf(userId));
+                    n.setType(1);
+                    n.setRelatedId(id);
+                    n.setContent("赞了你的笔记");
+                    n.setIsRead(false);
+                    n.setCreateTime(LocalDateTime.now());
+                    notificationService.save(n);
+                }
             }
         }
         else {
-            // 如果有点赞
             boolean b = update().setSql("liked = liked - 1").eq("id", id).update();
-            // 更新缓存
             if(b){
                 stringRedisTemplate.opsForZSet().remove(key,userId);
             }

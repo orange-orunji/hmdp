@@ -4,11 +4,14 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.hmdp.dto.Result;
 import com.hmdp.entity.Follow;
+import com.hmdp.entity.Notification;
 import com.hmdp.entity.User;
 import com.hmdp.entity.UserInfo;
 import com.hmdp.mapper.FollowMapper;
 import com.hmdp.service.IFollowService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hmdp.service.INotificationService;
+
 import com.hmdp.service.IUserInfoService;
 import com.hmdp.service.IUserService;
 import com.hmdp.utils.UserHolder;
@@ -33,6 +36,8 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
     private IUserService userService;
     @Resource
     private IUserInfoService userInfoService;
+    @Resource
+    private INotificationService notificationService;
 
     public FollowServiceImpl(StringRedisTemplate stringRedisTemplate) {
         this.stringRedisTemplate = stringRedisTemplate;
@@ -58,6 +63,15 @@ public class FollowServiceImpl extends ServiceImpl<FollowMapper, Follow> impleme
             if (isSuccess) {
                 stringRedisTemplate.opsForSet().add(key, userId.toString());
                 updateCount(userId, id, true);
+                Notification n = new Notification();
+                n.setUserId(id);
+                n.setFromUserId(userId);
+                n.setType(3);
+                n.setContent("关注了你");
+                n.setIsRead(false);
+                n.setCreateTime(LocalDateTime.now());
+                notificationService.save(n);
+
             }
         } else {
             //取关
